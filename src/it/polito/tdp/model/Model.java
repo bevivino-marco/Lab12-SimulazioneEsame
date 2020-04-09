@@ -64,10 +64,10 @@ public class Model {
 	}
 
 	
-	public Map <Distretto, List <Distretto>> getVicini (){
+	public Map <Distretto, List <Connessioni>> getVicini (){
 	
 			
-		Map <Distretto, List <Distretto>> mappa =  new HashMap <Distretto, List <Distretto>>();
+		Map <Distretto, List <Connessioni>> mappa =  new HashMap <Distretto, List <Connessioni>>();
 		/**/
 		for (Distretto d : grafo.vertexSet()) {
 			List <Connessioni> lC = new LinkedList <Connessioni>();
@@ -79,11 +79,7 @@ public class Model {
                 lC.add(c);
 			}
 			Collections.sort(lC);
-			
-			for (Connessioni cL : lC) {
-				distr.add(cL.getDistretto2());
-			}
-			mappa.put(d, distr);
+			mappa.put(d, lC);
 			
 		}
 		

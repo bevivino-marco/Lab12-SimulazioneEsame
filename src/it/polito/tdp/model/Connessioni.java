@@ -74,5 +74,11 @@ public int compareTo(Connessioni d) {
 	
 	return (int) (this.distanza-d.getDistanza());
 }
+
+@Override
+public String toString() {
+	return String.format("distretto2=%s, distanza=%s ", distretto2, distanza);
+}
+
    
 }
