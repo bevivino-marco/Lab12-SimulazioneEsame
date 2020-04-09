@@ -39,7 +39,7 @@ public class Model {
 	}
 	public void creaGrafo (int anno) {
 		this.grafo =new SimpleWeightedGraph<>(DefaultWeightedEdge.class);
-		idMapDistretti = dao.getDistretti(idMapDistretti);
+		idMapDistretti = dao.getDistretti(idMapDistretti, anno);
 		//System.out.println(idMapDistretti.values().toString());
 		List <Distretto> listaDistretti = new LinkedList <Distretto>(idMapDistretti.values());
 		for (Distretto d : listaDistretti) {

@@ -98,15 +98,16 @@ public class EventsDao {
 	
 	}
 	
-	public Map <Integer, Distretto> getDistretti(Map <Integer, Distretto> idMapDistretti){
+	public Map <Integer, Distretto> getDistretti(Map <Integer, Distretto> idMapDistretti , int anno){
 		String sql = "SELECT district_id,AVG(geo_lat),AVG(geo_lon) " + 
-				"FROM EVENTS " + 
+				"FROM EVENTS  " + 
+				"WHERE YEAR(reported_date)=? " + 
 				"GROUP BY district_id" ;
 		try {
 			Connection conn = DBConnect.getConnection() ;
 
 			PreparedStatement st = conn.prepareStatement(sql) ;
-			
+			st.setInt(1, anno);
 			//List<Integer> list = new ArrayList<>() ;
 			
 			ResultSet res = st.executeQuery() ;
