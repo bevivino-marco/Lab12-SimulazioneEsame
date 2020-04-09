@@ -77,7 +77,7 @@ public int compareTo(Connessioni d) {
 
 @Override
 public String toString() {
-	return String.format("distretto2=%s, distanza=%s ", distretto2, distanza);
+	return String.format("=%s, distanza=%s ", distretto2, distanza);
 }
 
    
