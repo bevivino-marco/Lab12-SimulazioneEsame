@@ -99,7 +99,7 @@ public class EventsDao {
 	}
 	
 	public Map <Integer, Distretto> getDistretti(Map <Integer, Distretto> idMapDistretti){
-		String sql = "SELECT district_id,geo_lat,geo_lon " + 
+		String sql = "SELECT district_id,AVG(geo_lat),AVG(geo_lon) " + 
 				"FROM EVENTS " + 
 				"GROUP BY district_id" ;
 		try {
@@ -113,7 +113,7 @@ public class EventsDao {
 			Map <Integer, Distretto> mappaD = new HashMap <Integer, Distretto>() ;
 			while(res.next()) {
 				try {
-					LatLng coord = new LatLng (res.getDouble("geo_lat"),res.getDouble("geo_lon"));
+					LatLng coord = new LatLng (res.getDouble("AVG(geo_lat)"),res.getDouble("AVG(geo_lon)"));
 					
 					int id = res.getInt("district_id");
 				   /* if (!idMapDistretti.isEmpty() && idMapDistretti.containsKey(id)) {
