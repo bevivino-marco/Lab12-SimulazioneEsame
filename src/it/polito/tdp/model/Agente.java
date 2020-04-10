@@ -18,7 +18,7 @@ public int getId() {
 public void setId(int id) {
 	this.id = id;
 }
-public boolean isOccupato() {
+public boolean getOccupato() {
 	return occupato;
 }
 public void setOccupato(boolean occupato) {

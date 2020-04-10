@@ -192,7 +192,7 @@ public class EventsDao {
 	public Centrale getCentrale(LocalDate data) {
 		String sql = "SELECT district_id ,AVG(geo_lat),AVG(geo_lon)  , COUNT(district_id) AS c " + 
 				"FROM EVENTS " + 
-				"WHERE DATE(reported_date)= '2016-01-01'  " + 
+				"WHERE DATE(reported_date)= ?  " + 
 				"GROUP BY district_id " + 
 				"ORDER BY c ASC " ;
 		try {

@@ -8,7 +8,8 @@ public class TestModel {
 		//model.creaGrafo(2014);
 		//model.getVicini();
 		Simulatore s = new Simulatore(2014, 3 , 2, 4);
-		
+		s.init();
+		s.run();
 	}
 
 }
