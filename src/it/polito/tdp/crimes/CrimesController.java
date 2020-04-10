@@ -50,7 +50,14 @@ public class CrimesController {
 
     @FXML
     void doCreaReteCittadina(ActionEvent event) {
-    	
+    	txtResult.clear();
+    	try {
+    		model.creaGrafo(boxAnno.getValue());
+    		txtResult.appendText(model.getValoriGrafo(boxAnno.getValue()));
+    		
+    	}catch (Exception e) {
+    		txtResult.appendText("errore nella creazione del grafo, inserire un anno!!!!");
+    		}
     }
 
     @FXML

@@ -1,17 +1,21 @@
 package it.polito.tdp.db;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.time.Year;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 import com.javadocmd.simplelatlng.LatLng;
 
+import it.polito.tdp.model.Centrale;
 import it.polito.tdp.model.Distretto;
 import it.polito.tdp.model.Event;
 
@@ -117,14 +121,15 @@ public class EventsDao {
 					LatLng coord = new LatLng (res.getDouble("AVG(geo_lat)"),res.getDouble("AVG(geo_lon)"));
 					
 					int id = res.getInt("district_id");
-				   /* if (!idMapDistretti.isEmpty() && idMapDistretti.containsKey(id)) {
+				    if (!idMapDistretti.isEmpty() && idMapDistretti.containsKey(id)) {
 				    	mappaD.put (id, idMapDistretti.get(id));
-				    }else {*/
+				    }else {
+					
 				    	mappaD.put (id, new Distretto (id, coord));
-				    //}
+				     }
 				} catch (Throwable t) {
 					t.printStackTrace();
-					System.out.println(res.getInt("errore nel getAnni del dao"));
+					System.out.println(res.getInt("errore nel getDistretti del dao"));
 				}
 			}
 			
@@ -139,7 +144,86 @@ public class EventsDao {
 	
 	}
 	
+	public List <Event> listAllEvents(LocalDate data){
+		String sql = "SELECT *  FROM events WHERE DATE(reported_date)= ? GROUP BY district_id , reported_date"
+				+ " ORDER BY reported_date ASC" ;
+		try {
+			Connection conn = DBConnect.getConnection() ;
+
+			PreparedStatement st = conn.prepareStatement(sql) ;
+			st.setDate(1, Date.valueOf(data));
+			
+			ResultSet res = st.executeQuery() ;
+			List<Event> lista = new LinkedList<Event>();
+			while(res.next()) {
+				try {
+					
+					
+					lista.add(new Event(res.getLong("incident_id"),
+							res.getInt("offense_code"),
+							res.getInt("offense_code_extension"), 
+							res.getString("offense_type_id"), 
+							res.getString("offense_category_id"),
+							res.getTimestamp("reported_date").toLocalDateTime(),
+							res.getString("incident_address"),
+							res.getDouble("geo_lon"),
+							res.getDouble("geo_lat"),
+							res.getInt("district_id"),
+							res.getInt("precinct_id"), 
+							res.getString("neighborhood_id"),
+							res.getInt("is_crime"),
+							res.getInt("is_traffic")));//}
+				} catch (Throwable t) {
+					t.printStackTrace();
+					System.out.println(res.getInt("id"));
+				}
+			}
+			
+			conn.close();
+			return lista ;
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null ;
+		}
+	}
 	
+	public Centrale getCentrale(LocalDate data) {
+		String sql = "SELECT district_id ,AVG(geo_lat),AVG(geo_lon)  , COUNT(district_id) AS c " + 
+				"FROM EVENTS " + 
+				"WHERE DATE(reported_date)= '2016-01-01'  " + 
+				"GROUP BY district_id " + 
+				"ORDER BY c ASC " ;
+		try {
+			Connection conn = DBConnect.getConnection() ;
+
+			PreparedStatement st = conn.prepareStatement(sql) ;
+			st.setDate(1, Date.valueOf(data));
+			
+			ResultSet res = st.executeQuery() ;
+		    Centrale c = null;
+			if(res.next()) {
+				try {
+					
+					c =  new Centrale (res.getDouble("AVG(geo_lat)"),res.getDouble("AVG(geo_lon)"),
+							res.getInt("district_id"));
+					
+				} catch (Throwable t) {
+					t.printStackTrace();
+					System.out.println(res.getInt("id"));
+				}
+			}
+			
+			conn.close();
+			return c ;
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null ;
+		}
+	}
 	
 	
 }

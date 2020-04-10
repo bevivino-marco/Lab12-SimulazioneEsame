@@ -1,5 +1,6 @@
 package it.polito.tdp.model;
 
+import java.time.LocalDate;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -32,12 +33,13 @@ public class Model {
 	public Model() {
 		dao = new EventsDao();
 		Map < Integer , Event > idMapEventi = new HashMap < Integer , Event > ();
-		Map < Integer , Distretto > idMapDistretti = new HashMap < Integer , Distretto > ();
+	
 	    List <Event> listaEventi = new LinkedList <Event>();
-		
+	
 		
 	}
 	public void creaGrafo (int anno) {
+		Map < Integer , Distretto > idMapDistretti = new HashMap < Integer , Distretto > ();
 		this.grafo =new SimpleWeightedGraph<>(DefaultWeightedEdge.class);
 		idMapDistretti = dao.getDistretti(idMapDistretti, anno);
 		//System.out.println(idMapDistretti.values().toString());
@@ -62,7 +64,10 @@ public class Model {
 		System.out.println(grafo.vertexSet().size());
 		System.out.println(grafo.edgeSet().size()+"\n");
 	}
-
+    public String getValoriGrafo(int anno) {
+    	return "il grafo dell' anno "+anno+" contiene :\n "+grafo.vertexSet().size()+" vertici;\n"+
+    			grafo.edgeSet().size()+"archi;\n";
+    }
 	
 	public Map <Distretto, List <Connessioni>> getVicini (){
 	
@@ -92,5 +97,26 @@ public class Model {
 	
 	public List <Integer> getAnni(){
 		return dao.getAnni();
+	}
+	/*public List <Event> getEventiGiorno(LocalDate data) {
+		List<Event> lista= new LinkedList <Event>();
+		for (Distretto d : grafo.vertexSet()) {
+			for (Event e : d.getEventi().values()) {
+				if ((e.getReported_date().toLocalDate()).equals(data)) {
+					lista.add(e);
+				}
+			}
+			
+		}
+		Collections.sort(lista);
+		System.out.println(lista.toString());
+		return lista;
+		
+	}*/
+	public List<Event> getEventiGiorno(LocalDate data) {
+		return dao.listAllEvents(data);
+	}
+	public Centrale getCentrale(LocalDate data) {
+		return dao.getCentrale(data);
 	}
 }
