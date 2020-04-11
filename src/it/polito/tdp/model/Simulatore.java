@@ -45,59 +45,51 @@ public void init () {
 	
 }
    public void run () {
-	   Evento e;
-	   System.out.println(eventList.size());
-	  while (eventList.isEmpty()) {
-		  e = eventList.poll();
+	   
+	  while (!eventList.isEmpty()) {
+		 Evento e = eventList.poll();
 			switch (e.getEtype()) {
 			
 			case CRIMINE:
-				/*if (trovaAgenteLibero(e.getCoord())==null) {
-					e.setData(e.getData().plusMinutes(15));
-					eventList.add(e);
-					//Stats.malGestito();
-					System.out.println("++MAL GESTITO\n");
-					
-				}else {*/
-				
 				int id = trovaAgenteLibero(e.getCoord());
 				if (id==11) {
-					System.out.println("++MAL GESTITO\n");
-					break;
+					
+					System.out.println(e.getEtype()+", "+e.getData()+"Mal gestito,");
+					
 				}else {
 				Agente a = agenti.get(id);
 				e.setA(a);
 				a.setOccupato(true);
 				a.setCoord(e.getCoord());
-				if ((getTempo(e)-TEMPO_MAX>0)) {
-					//Stats.malGestito();
-					System.out.println("MAL GESTITO\n");
+				if ((getTempo(e)-TEMPO_MAX)>0) {
+					System.out.println("MAL GESTITO");
 					}
-				    // aggiungo che l agente è occupato
 					
 					if (e.getType()=="all_other_crimes") {
 					        eventList.add(new Evento (Evento.eventTypeEnum.AGENTE_SI_LIBERA,
 							e.getCoord(),
-							null,e.getData().plusHours(rand.nextInt(2)+1),e.getType()));
-					
+							e.getA(),e.getData().plusHours(rand.nextInt(2)+1),e.getType()));
+					        System.out.println(e.getEtype()+", "+e.getData()+",");
 				    }else {
 					        eventList.add(new Evento (Evento.eventTypeEnum.AGENTE_SI_LIBERA,
 							e.getCoord(),
-							null,e.getData().plusHours(2),e.getType()));
+							e.getA(),e.getData().plusHours(2),e.getType()));
+					        System.out.println(e.getEtype()+", "+e.getData()+",");
 				    }
 					
-			break;
-				}
+			
+				}break;
 			case AGENTE_SI_LIBERA:
 				Agente a1 =e.getA();
+				//System.out.println("Agente si libera"+ ": "+ a1.toString());
 				a1.setOccupato(false);
-				
+				System.out.println(e.getEtype()+", "+e.getData()+",");
 		    break;
 			
 			
 			}  
 			  
-			  System.out.println(e.getEtype()+", "+e.getData()+",\n");
+			 
 		  
 	  
 		  }
@@ -129,9 +121,9 @@ public int getTempo (Evento e) {
 	int tempo;
 	LatLng agenteLL = e.getA().getCoord();
 	LatLng eLL = e.getCoord();
-	long distanza = (long) LatLngTool.distance(agenteLL, eLL, LengthUnit.KILOMETER);
+	double distanza =  LatLngTool.distance(agenteLL, eLL, LengthUnit.KILOMETER);
 	//tempo = Duration.ofMinutes(distanza/60);
-	tempo = (int) ((distanza/60)*60*60);
+	tempo = (int) (distanza/(60/(60*60)));
 	return tempo;
 	
 }  
