@@ -15,14 +15,14 @@ public class Simulatore {
 	private Model m;
 	private Random rand;
 	// parametri iniziali
-	Duration TEMPO_MAX;
+	int TEMPO_MAX;
 	Centrale c;
 	int numeroAgenti;
 	
 	
 	
 public Simulatore(int anno, int mese , int giorno, int numeroAgenti) {
-	TEMPO_MAX = Duration.ofMinutes(15);
+	TEMPO_MAX = 15*60;
 	m = new Model();
 	//m.creaGrafo(anno);
 	agenti = new HashMap <Integer, Agente>();
@@ -45,10 +45,10 @@ public void init () {
 	
 }
    public void run () {
-	   Evento e = eventList.poll();
-	   //System.out.println(e.getEtype()+"  "+ e.getA());
-	  while (!eventList.isEmpty()) {
-		  
+	   Evento e;
+	   System.out.println(eventList.size());
+	  while (eventList.isEmpty()) {
+		  e = eventList.poll();
 			switch (e.getEtype()) {
 			
 			case CRIMINE:
@@ -60,15 +60,16 @@ public void init () {
 					
 				}else {*/
 				
-				Agente a = trovaAgenteLibero(e.getCoord());
-				if (a==null) {
+				int id = trovaAgenteLibero(e.getCoord());
+				if (id==11) {
 					System.out.println("++MAL GESTITO\n");
 					break;
-				}
+				}else {
+				Agente a = agenti.get(id);
 				e.setA(a);
 				a.setOccupato(true);
 				a.setCoord(e.getCoord());
-				if (getTempo(e).compareTo(TEMPO_MAX)>0) {
+				if ((getTempo(e)-TEMPO_MAX>0)) {
 					//Stats.malGestito();
 					System.out.println("MAL GESTITO\n");
 					}
@@ -86,7 +87,7 @@ public void init () {
 				    }
 					
 			break;
-			
+				}
 			case AGENTE_SI_LIBERA:
 				Agente a1 =e.getA();
 				a1.setOccupato(false);
@@ -96,16 +97,16 @@ public void init () {
 			
 			}  
 			  
-			  System.out.println(e.getEtype()+", "+e.getData()+", "+e.getA()+"\n");
+			  System.out.println(e.getEtype()+", "+e.getData()+",\n");
 		  
 	  
 		  }
 	  } 
 	   
-public Agente trovaAgenteLibero(LatLng coord) {
-	double distanzaMin = 4000.00;
+public int trovaAgenteLibero(LatLng coord) {
+	double distanzaMin = Double.MAX_VALUE;
 	double d=0;
-	int a = 0;
+	int a = 11;
 	for (Agente agente : agenti.values()) {
 		d = LatLngTool.distance(agente.getCoord(), coord, LengthUnit.KILOMETER);
 		if (agente.getOccupato()==false && d<distanzaMin) {
@@ -115,21 +116,22 @@ public Agente trovaAgenteLibero(LatLng coord) {
 		}
 		
 	}
-	if (a==0) {
+	/*if (a==11) {
 		return null;
 	}
 	Agente a1 = agenti.get(a);
     a1.setOccupato(true);
-	//System.out.println("\n"+a.toString());
-	return a1;
+	//System.out.println("\n"+a.toString());*/
+	return a;
 }
    
-public Duration getTempo (Evento e) {
-	Duration tempo;
+public int getTempo (Evento e) {
+	int tempo;
 	LatLng agenteLL = e.getA().getCoord();
 	LatLng eLL = e.getCoord();
 	long distanza = (long) LatLngTool.distance(agenteLL, eLL, LengthUnit.KILOMETER);
-	tempo = Duration.ofMinutes(distanza/60);
+	//tempo = Duration.ofMinutes(distanza/60);
+	tempo = (int) ((distanza/60)*60*60);
 	return tempo;
 	
 }  
